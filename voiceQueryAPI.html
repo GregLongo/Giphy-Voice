@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<style>
+body{
+		background-color: black;
+		font-size: 16pt;
+	}
+p{
+	color: grey;
+}
+div{
+	color: green;
+}
+
+</style>
+<body>
+	<center>
+	<iframe id = gif height = 400px width = 400px></iframe>
+	</p>
+	<div id = word >Trending Now</div>
+	<center>
+</body>
+<script src = jquery-1.11.2.js></script>
+<script>
+		var recognition = new webkitSpeechRecognition;
+		recognition.continuous = true;
+		var textbox = document.getElementById('word');
+		var myQuery = "trending";
+		textbox.innerHTML = myQuery;
+		getGifs();
+		
+		recognition.start();
+		recognition.onresult = function(event){
+			myQuery = event.results[0][0].transcript;
+			getGifs();
+			recognition.stop();
+			}
+		
+		recognition.onend = function(){
+			textbox.innerHTML = myQuery;
+			recognition.start();
+		}
+		
+		function getGifs(){
+			var myGifs = [];
+			var myIndex;
+			var myData = $.get("https://api.giphy.com/v1/gifs/search?q="+ myQuery +"&api_key=dc6zaTOxFJmzC&limit=5");
+			myData.done(function(data) { 
+			 $.each(data.data, function(index) {
+				myGifs[index] = data.data[index].embed_url;
+				});
+				myIndex = Math.floor(Math.random()*myGifs.length);
+				console.log(myGifs[myIndex]);
+				var gif = document.getElementById('gif');
+				gif.src = myGifs[myIndex].replace("http://", "https://");
+			 });
+		 }
+
+</script>
+</html>
